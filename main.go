@@ -21,7 +21,7 @@ func main() {
 	app := fiber.New()
 
 	app.Get("/", func(context *fiber.Ctx) error {
-		s := fmp.Service.New(fmp.Service{}, os.Getenv("FMP_API_KEY"), os.Getenv("FMP_ENDPOINT"))
+		s := fmp.FMP.New(os.Getenv("FMP_API_KEY"), os.Getenv("FMP_ENDPOINT"))
 		fmt.Println(s)
 		return context.Status(200).Send([]byte("OK"))
 	})

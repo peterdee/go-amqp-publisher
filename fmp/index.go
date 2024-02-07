@@ -1,15 +1,15 @@
 package fmp
 
-type Service struct {
-	API_KEY  string
-	ENDPOINT string
+type FMPService struct {
+	apiKey   string
+	endpoint string
 }
 
-var ServiceInstance Service
+var FMP FMPService
 
-func (s Service) New(apiKey, endpoint string) Service {
-	s.API_KEY = apiKey
-	s.ENDPOINT = endpoint
-	ServiceInstance = s
-	return ServiceInstance
+func (instance FMPService) New(apiKey, endpoint string) FMPService {
+	instance.apiKey = apiKey
+	instance.endpoint = endpoint
+	FMP = instance
+	return FMP
 }
