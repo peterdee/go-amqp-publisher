@@ -6,7 +6,7 @@
 go run ./
 ```
 
-With AIR:
+With [AIR](https://github.com/cosmtrek/air):
 
 ```shell script
 air
