@@ -13,10 +13,15 @@ type FMPService struct {
 
 var FMP FMPService
 
+// Get quote data for a stock
+func (instance FMPService) GetQuote(symbol string) (map[string]string, error) {
+	return utilities.HttpGet(
+		fmt.Sprintf("%s/quote/%s?apikey=%s", instance.endpoint, symbol, instance.apiKey),
+	)
+}
+
 // Get a list of all stocks
-func (instance FMPService) GetStocks() ([]byte, error) {
-	endpoint := fmt.Sprintf("%s/stock/list?apikey=%s", instance.endpoint, instance.apiKey)
-	fmt.Println(endpoint)
+func (instance FMPService) GetStocks() (map[string]string, error) {
 	return utilities.HttpGet(fmt.Sprintf("%s/stocks/list?apikey=%s", instance.endpoint, instance.apiKey))
 }
 

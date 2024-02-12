@@ -20,11 +20,17 @@ func main() {
 
 	app := fiber.New()
 
+	fmpApiKey := os.Getenv("FMP_API_KEY")
+	fmpEndpoint := os.Getenv("FMP_ENDPOINT")
+	if fmpApiKey == "" || fmpEndpoint == "" {
+		log.Fatal("Could not load FMP configuration")
+	}
+
 	// Initialize FMP service
-	fmp.FMP.New(os.Getenv("FMP_API_KEY"), os.Getenv("FMP_ENDPOINT"))
+	fmp.FMP.New(fmpApiKey, fmpEndpoint)
 
 	app.Get("/", func(context *fiber.Ctx) error {
-		data, err := fmp.FMP.GetStocks()
+		data, err := fmp.FMP.GetQuote("AAPL")
 		fmt.Println(data, err)
 		return context.Status(200).Send([]byte("OK"))
 	})

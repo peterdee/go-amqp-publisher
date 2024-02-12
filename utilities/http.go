@@ -1,16 +1,18 @@
 package utilities
 
-import "github.com/monaco-io/request"
+import (
+	"github.com/monaco-io/request"
+)
 
-func HttpGet(endpoint string) ([]byte, error) {
+func HttpGet(endpoint string) (map[string]string, error) {
 	client := request.Client{
 		Method: "GET",
 		URL:    endpoint,
 	}
-	var result interface{}
+	var result map[string]string
 	response := client.Send().Scan(&result)
-	if !response.OK() {
+	if !(response.OK() && 100 < response.Code() && response.Code() < 300) {
 		return nil, response.Error()
 	}
-	return response.Bytes(), nil
+	return result, nil
 }
