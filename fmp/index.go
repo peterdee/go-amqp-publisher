@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"go-amqp-publisher/utilities"
+
+	"github.com/opensaucerer/goaxios"
 )
 
 type FMPService struct {
@@ -15,6 +17,18 @@ var FMP FMPService
 
 // Get quote data for a stock
 func (instance FMPService) GetQuote(symbol string) (interface{}, error) {
+	request := goaxios.GoAxios{
+		Method:         "GET",
+		ResponseStruct: &QuoteData{},
+		Url:            fmt.Sprintf("%s/quote/%s?apikey=%s", instance.endpoint, symbol, instance.apiKey),
+	}
+	response := request.RunRest()
+
+	quoteData := *response.Body.(*QuoteData)
+	fmt.Println(
+		"here",
+		quoteData[0].Change,
+	)
 	return utilities.HttpGet(
 		fmt.Sprintf("%s/quote/%s?apikey=%s", instance.endpoint, symbol, instance.apiKey),
 	)
