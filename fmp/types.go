@@ -1,6 +1,15 @@
 package fmp
 
-type QuoteData []struct {
+type ListQuoteData []struct {
+	Symbol            string  `json:"symbol"`
+	Name              string  `json:"name"`
+	Price             float64 `json:"price"`
+	Exchange          string  `json:"exchange"`
+	ExchangeShortName string  `json:"exchangeShortName"`
+	Type              string  `json:"type"`
+}
+
+type QuoteData struct {
 	Symbol               string  `json:"symbol"`
 	Name                 string  `json:"name"`
 	Price                float64 `json:"price"`
@@ -24,3 +33,5 @@ type QuoteData []struct {
 	SharesOutstanding    int     `json:"sharesOutstanding"`
 	Timestamp            int     `json:"timestamp"`
 }
+
+type QuoteDataResponse []QuoteData

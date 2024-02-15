@@ -1,9 +1,8 @@
 package fmp
 
 import (
+	"errors"
 	"fmt"
-
-	"go-amqp-publisher/utilities"
 
 	"github.com/opensaucerer/goaxios"
 )
@@ -16,27 +15,35 @@ type FMPService struct {
 var FMP FMPService
 
 // Get quote data for a stock
-func (instance FMPService) GetQuote(symbol string) (interface{}, error) {
+func (instance FMPService) GetQuote(symbol string) (QuoteData, error) {
 	request := goaxios.GoAxios{
 		Method:         "GET",
-		ResponseStruct: &QuoteData{},
+		ResponseStruct: &QuoteDataResponse{},
 		Url:            fmt.Sprintf("%s/quote/%s?apikey=%s", instance.endpoint, symbol, instance.apiKey),
 	}
 	response := request.RunRest()
 
-	quoteData := *response.Body.(*QuoteData)
-	fmt.Println(
-		"here",
-		quoteData[0].Change,
-	)
-	return utilities.HttpGet(
-		fmt.Sprintf("%s/quote/%s?apikey=%s", instance.endpoint, symbol, instance.apiKey),
-	)
+	quoteData := *response.Body.(*QuoteDataResponse)
+	if len(quoteData) == 0 {
+		return QuoteData{}, errors.New("could not load quote data")
+	}
+	return quoteData[0], nil
 }
 
 // Get a list of all stocks
-func (instance FMPService) GetStocks() (interface{}, error) {
-	return utilities.HttpGet(fmt.Sprintf("%s/stocks/list?apikey=%s", instance.endpoint, instance.apiKey))
+func (instance FMPService) GetStocks() (ListQuoteData, error) {
+	request := goaxios.GoAxios{
+		Method:         "GET",
+		ResponseStruct: &ListQuoteData{},
+		Url:            fmt.Sprintf("%s/stock/list?apikey=%s", instance.endpoint, instance.apiKey),
+	}
+	response := request.RunRest()
+
+	listQuoteData := *response.Body.(*ListQuoteData)
+	if len(listQuoteData) == 0 {
+		return ListQuoteData{}, errors.New("could not load quote list")
+	}
+	return listQuoteData, nil
 }
 
 // Create a new instace of FMP service
