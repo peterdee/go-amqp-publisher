@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   rabbitmq:
-    image: rabbitmq:3.12.12
+    image: rabbitmq:3.12.12-management
     hostname: rabbitmq
     restart: always
     env_file: .env
