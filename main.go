@@ -58,7 +58,7 @@ func main() {
 		),
 	)
 	if connectionError != nil {
-		log.Fatal(connectionError)
+		log.Fatal("Could not connect to RabbitMQ:", connectionError)
 	}
 	channel, channelError := rabbitMQConnection.Channel()
 	if channelError != nil {
