@@ -1,9 +1,11 @@
 package rabbitmq
 
 import (
+	ctx "context"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -50,4 +52,21 @@ func CreateConnection() {
 	}
 	Channel = channel
 	Queue = queue
+}
+
+func Publish(data []byte, contentType string) error {
+	publishContext, cancel := ctx.WithTimeout(ctx.Background(), 5*time.Second)
+	defer cancel()
+
+	return Channel.PublishWithContext(
+		publishContext,
+		"",
+		Queue.Name,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: contentType,
+			Body:        data,
+		},
+	)
 }

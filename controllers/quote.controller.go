@@ -1,12 +1,9 @@
 package controllers
 
 import (
-	ctx "context"
 	"encoding/json"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
-	amqp "github.com/rabbitmq/amqp091-go"
 
 	"go-amqp-publisher/fmp"
 	"go-amqp-publisher/rabbitmq"
@@ -30,26 +27,12 @@ func QuoteController(context *fiber.Ctx) error {
 		)
 	}
 
-	publishContext, cancel := ctx.WithTimeout(ctx.Background(), 5*time.Second)
-	defer cancel()
-
 	preparedData, parsingError := json.Marshal(data)
 	if parsingError != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	publishError := rabbitmq.Channel.PublishWithContext(
-		publishContext,
-		"",
-		rabbitmq.Queue.Name,
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        preparedData,
-		},
-	)
-
+	publishError := rabbitmq.Publish(preparedData, "application/json")
 	if publishError != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}

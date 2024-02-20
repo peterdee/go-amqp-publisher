@@ -20,7 +20,7 @@ import (
 func main() {
 	envError := godotenv.Load()
 	if envError != nil {
-		log.Fatal("Error loading .env file!")
+		log.Fatal("Could not load .env file!")
 	}
 
 	fmp.FMP.New()
