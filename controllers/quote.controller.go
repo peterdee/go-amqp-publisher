@@ -16,20 +16,18 @@ import (
 func QuoteController(context *fiber.Ctx) error {
 	quote := context.Params("quote", "")
 	if quote == "" {
-		return utilities.Response(utilities.ResponseOptions{
-			Context: context,
-			Info:    "MISSING_DATA",
-			Status:  fiber.StatusBadRequest,
-		})
+		return fiber.NewError(
+			fiber.StatusBadRequest,
+			"MISSING_DATA",
+		)
 	}
 
 	data, dataError := fmp.FMP.GetQuote(quote)
 	if dataError != nil {
-		return utilities.Response(utilities.ResponseOptions{
-			Context: context,
-			Info:    "COULD_NOT_LOAD_STOCK_DATA",
-			Status:  fiber.StatusBadRequest,
-		})
+		return fiber.NewError(
+			fiber.StatusBadRequest,
+			"COULD_NOT_LOAD_STOCK_DATA",
+		)
 	}
 
 	publishContext, cancel := ctx.WithTimeout(ctx.Background(), 5*time.Second)
@@ -37,11 +35,7 @@ func QuoteController(context *fiber.Ctx) error {
 
 	preparedData, parsingError := json.Marshal(data)
 	if parsingError != nil {
-		return utilities.Response(utilities.ResponseOptions{
-			Context: context,
-			Info:    "INTERNAL_SERVER_ERROR",
-			Status:  fiber.StatusInternalServerError,
-		})
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	publishError := rabbitmq.Channel.PublishWithContext(
@@ -57,11 +51,7 @@ func QuoteController(context *fiber.Ctx) error {
 	)
 
 	if publishError != nil {
-		return utilities.Response(utilities.ResponseOptions{
-			Context: context,
-			Info:    "INTERNAL_SERVER_ERROR",
-			Status:  fiber.StatusInternalServerError,
-		})
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	return utilities.Response(utilities.ResponseOptions{

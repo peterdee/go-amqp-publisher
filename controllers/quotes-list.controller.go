@@ -10,11 +10,10 @@ import (
 func QuotesList(context *fiber.Ctx) error {
 	data, dataError := fmp.FMP.GetStocks()
 	if dataError != nil {
-		return utilities.Response(utilities.ResponseOptions{
-			Context: context,
-			Info:    "COULD_NOT_LOAD_STOCK_LIST",
-			Status:  fiber.StatusBadRequest,
-		})
+		return fiber.NewError(
+			fiber.StatusInternalServerError,
+			"COULD_NOT_LOAD_STOCK_LIST",
+		)
 	}
 
 	return utilities.Response(utilities.ResponseOptions{

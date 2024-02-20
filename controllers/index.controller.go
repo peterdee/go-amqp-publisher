@@ -7,7 +7,5 @@ import (
 )
 
 func IndexController(context *fiber.Ctx) error {
-	return utilities.Response(utilities.ResponseOptions{
-		Context: context,
-	})
+	return utilities.Response(utilities.ResponseOptions{Context: context})
 }

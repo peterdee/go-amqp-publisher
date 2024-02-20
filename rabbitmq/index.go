@@ -33,11 +33,11 @@ func CreateConnection() {
 	if connectionError != nil {
 		log.Fatal("Could not connect to RabbitMQ:", connectionError)
 	}
-	Channel, channelError := rabbitMQConnection.Channel()
+	channel, channelError := rabbitMQConnection.Channel()
 	if channelError != nil {
 		log.Fatal(channelError)
 	}
-	queue, queueError := Channel.QueueDeclare(
+	queue, queueError := channel.QueueDeclare(
 		"quotes",
 		false,
 		false,
@@ -48,5 +48,6 @@ func CreateConnection() {
 	if queueError != nil {
 		log.Fatal(queueError)
 	}
+	Channel = channel
 	Queue = queue
 }

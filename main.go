@@ -14,6 +14,7 @@ import (
 	"go-amqp-publisher/controllers"
 	"go-amqp-publisher/fmp"
 	"go-amqp-publisher/rabbitmq"
+	"go-amqp-publisher/utilities"
 )
 
 func main() {
@@ -25,7 +26,9 @@ func main() {
 	fmp.FMP.New()
 	rabbitmq.CreateConnection()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: utilities.DefaultErrorHandler,
+	})
 	app.Use(favicon.New(favicon.Config{
 		File: "./assets/favicon.ico",
 		URL:  "/favicon.ico",
