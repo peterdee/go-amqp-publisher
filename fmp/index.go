@@ -3,6 +3,8 @@ package fmp
 import (
 	"errors"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/opensaucerer/goaxios"
 )
@@ -47,7 +49,13 @@ func (instance FMPService) GetStocks() (ListQuoteData, error) {
 }
 
 // Create a new instace of FMP service
-func (instance FMPService) New(apiKey, endpoint string) FMPService {
+func (instance FMPService) New() FMPService {
+	apiKey := os.Getenv("FMP_API_KEY")
+	endpoint := os.Getenv("FMP_ENDPOINT")
+	if apiKey == "" || endpoint == "" {
+		log.Fatal("Could not load FMP configuration")
+	}
+
 	instance.apiKey = apiKey
 	instance.endpoint = endpoint
 	FMP = instance
