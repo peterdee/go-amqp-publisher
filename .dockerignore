@@ -1,0 +1,12 @@
+# Directories
+.git/
+.idea/
+.vscode/
+tmp/
+
+# Files
+.env.example
+.gitignore
+docker-compose.yml
+LICENSE.md
+README.md
